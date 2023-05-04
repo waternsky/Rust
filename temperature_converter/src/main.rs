@@ -19,26 +19,30 @@ fn main() {
 
     println!("Input the temperature");
 
-    io::stdin()
-        .read_line(&mut temperature)
-        .expect("Failed to read the temperature");
+    let temperature: Option<Temperature> = loop {
+        
+        io::stdin()
+            .read_line(&mut temperature)
+            .expect("Failed to read the temperature");
 
-    let temperature: Option<Temperature> = match temperature.trim() {
-        inp => {
-            // º is 2 bytes character hence 3 instead of 2 below!!
-            let (num, unit) = inp.split_at(inp.len() - 3);
+        match temperature.trim() {
+            inp => {
+                // º is 2 bytes character hence 3 instead of 2 below!!
+                let (num, unit) = inp.split_at(inp.len() - 3);
             
-            let num: f32 = num.parse().expect("Unable to read valid number");
+                let num: f32 = num.parse().expect("Unable to read valid number");
 
-            match unit {
-                "ºF" => Some(Temperature::Farhenheit(num)),
-                "ºC" => Some(Temperature::Celsius(num)),
-                _ => {
-                    println!("Please input temperature in correct format. e.g, 32ºC");
-                    None
+                match unit {
+                    "ºF" => break Some(Temperature::Farhenheit(num)),
+                    "ºC" => break Some(Temperature::Celsius(num)),
+                    _ => {
+                        println!("Please input temperature in correct format. e.g, 32ºC");
+                        temperature = String::new();
+                        continue;
+                    }
                 }
             }
-        }    
+        }
     };
 
     let temperature: Temperature = match temperature {
