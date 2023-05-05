@@ -25,22 +25,42 @@ fn main() {
             .read_line(&mut temperature)
             .expect("Failed to read the temperature");
 
-        match temperature.trim() {
-            inp => {
-                // º is 2 bytes character hence 3 instead of 2 below!!
-                let (num, unit) = inp.split_at(inp.len() - 3);
-            
-                let num: f32 = num.parse().expect("Unable to read valid number");
+        let chars = temperature
+            .trim()
+            .chars()
+            .enumerate();
 
-                match unit {
-                    "ºF" => break Some(Temperature::Farhenheit(num)),
-                    "ºC" => break Some(Temperature::Celsius(num)),
-                    _ => {
-                        println!("Please input temperature in correct format. e.g, 32ºC");
-                        temperature = String::new();
-                        continue;
-                    }
-                }
+        let input_len = chars.clone().count();
+
+        let mut unit = String::new();
+
+        let mut num = String::new();
+
+        for (index, value) in chars {
+            if index >= input_len - 2 {
+                unit.push(value);
+            }
+            else {
+                num.push(value);
+            }
+        }
+
+        let num: f32 = match num.trim().parse::<f32>() {
+            Ok(nu) => nu,
+            Err(_) => {
+                println!("Please input temperature in correct format. e.g, 32ºC");
+                temperature = String::new();
+                continue;
+            }
+        };
+
+        match &unit[..] {
+            "ºF" => break Some(Temperature::Farhenheit(num)),
+            "ºC" => break Some(Temperature::Celsius(num)),
+            _ => {
+                println!("Please input temperature in correct format. e.g, 45ºF");
+                temperature = String::new();
+                continue;
             }
         }
     };
