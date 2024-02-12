@@ -1,40 +1,38 @@
 use std::io;
 
 fn main() {
+    println!("Nth fibonacci number calculator");
     
-    println!("How many fibonacci numbers do you want?");
-
     let mut input = String::new();
 
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Unable to read line!");
-    
-    let input: u32 = match input.trim().parse() {
-        Ok(num) => num,
-        Err(_) => panic!("Please type natural number!"),
+    let input: usize = loop {
+        println!("Please type valid number: ");
+        
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Unable to read line");
+
+        match input.trim().parse() {
+            Ok(num) => break num,
+            Err(_) => continue,
+        };
     };
 
-    println!("You typed: {input}");
+    println!("User input: {input}");
 
     let ans = fibonacci(input);
-
-    println!("Array of fibonacci numbers: {:?}", ans);
+    println!("Num: {ans}");
 }
 
-fn fibonacci(n: u32) -> Vec<u128> {
-   
-    let num = n as usize;
-
-    let mut v: Vec<u128> = Vec::new(); 
-
+fn fibonacci(x: usize) -> u128 {
+    
+    let mut v = Vec::new();
     v.push(1);
     v.push(1);
 
-    for i in 2..=num {
-        v.push(&v[i-1]+&v[i-2]);
+    for i in 2..=x {
+        v.push(v[i - 1] + v[i - 2]);
     }
 
-    v
+    return v[x];
 }
-
